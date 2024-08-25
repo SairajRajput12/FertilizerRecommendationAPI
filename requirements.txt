@@ -1,11 +1,8 @@
-fastapi  
-uvicorn 
-pydantic 
-scikit-learn 
-numpy 
+fastapi
+uvicorn
+pydantic
+scikit-learn
+numpy
 pandas
-pickle
 seaborn
-sklearn
-
 matplotlib
