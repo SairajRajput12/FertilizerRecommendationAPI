@@ -28,8 +28,8 @@ app.add_middleware(
 )
 
 # Load the trained model
-pickle_in = open("fertilizer2.pkl", "rb") 
-classifier = pickle.load(pickle_in) 
+# pickle_in = open("fertilizer3.pkl", "rb") 
+# classifier = pickle.load(pickle_in) 
 
 @app.get('/')
 def basic_function():
@@ -38,9 +38,6 @@ def basic_function():
 @app.post('/post') 
 def predict_fertilizer(data: FertilizerInfo): 
     data = data.dict() 
-    Temperature = data['Temperature'] 
-    Humidity = data['Humidity'] 
-    Moisture = data['Moisture'] 
     Nitrogen = data['Nitrogen'] 
     Potassium = data['Potassium'] 
     Phosphorous = data['Phosphorous'] 
@@ -59,12 +56,9 @@ def predict_fertilizer(data: FertilizerInfo):
         "Black": 0, "Clayey": 1, "Loamy": 2, "Red": 3, "Sandy": 4
     }
     
-    fertilizer_map = {
-        0: "10-10-10", 1: "10-26-26", 2: "14-14-14", 3: "14-35-14", 
-        4: "15-15-15", 5: "17-17-17", 6: "20-20", 7: "28-28", 8: "DAP", 
-        9: "Potassium chloride", 10: "Potassium sulfate", 11: "Superphosphate", 
-        12: "TSP", 13: "Urea"
-    }
+    ferti = pickle.load(open('fertilizer.pkl','rb'))
+    p = ferti.classes_
+    fertilizer_map = p  
     
     # Convert the string inputs to integer codes
     crop_code = crop_map.get(Crop_Code, -1) 
@@ -74,14 +68,16 @@ def predict_fertilizer(data: FertilizerInfo):
         return {'error': 'Invalid Crop_Code or Soil_Code'}
 
     # Perform the prediction
-    prediction = classifier.predict([[Temperature, Humidity, Moisture, Nitrogen, Potassium, Phosphorous, soil_code, crop_code]])
-    
+    classifier = pickle.load(open('classifier5.pkl','rb'))
+    prediction = classifier.predict([[soil_code, crop_code, Nitrogen, Potassium, Phosphorous]])
+    print('prediction line 73 ',prediction)
+    print(type(prediction))
     # Extracting the first element from the prediction array
     prediction_code = int(prediction[0])
-    
+    print(p)
     # Get the fertilizer name from the prediction
-    response = fertilizer_map.get(prediction_code, 'Unknown Fertilizer')
-    
+    response = p[prediction[0]]
+    print(response)
     return {'prediction': response} 
 
 
