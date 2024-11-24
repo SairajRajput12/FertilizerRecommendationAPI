@@ -84,9 +84,9 @@ def predict_fertilizer(data: FertilizerInfo):
     label_encoders = joblib.load('label_encoders.pkl')  # New label encoders file path
     
     # Encode input data using the new label encoders
-    soil_type_encoded = label_encoders['Soil Type'].transform([input_data.Soil_Type])[0]
-    crop_type_encoded = label_encoders['Crop Type'].transform([input_data.Crop_Type])[0]
-    scaled_values = scaler.transform([[input_data.Nitrogen, input_data.Potassium, input_data.Phosphorous]])[0]
+    soil_type_encoded = label_encoders['Soil Type'].transform([data.Soil_Type])[0]
+    crop_type_encoded = label_encoders['Crop Type'].transform([data.Crop_Type])[0]
+    scaled_values = scaler.transform([[data.Nitrogen, data.Potassium, data.Phosphorous]])[0]
     features = [soil_type_encoded, crop_type_encoded, scaled_values[0], scaled_values[1], scaled_values[2]]
     
     # Make prediction using the new model
