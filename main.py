@@ -138,12 +138,12 @@ def predict_fertilizer(data: FertilizerInfo):
     input_df = pd.DataFrame(input_data)
 
     # Perform the prediction
-    prediction = classifier.predict(input_df)
+    prediction = loaded_model.predict(input_df)
 
     # Get the fertilizer name from the prediction
-    response = fertilizer_map.get(int(prediction[0]), 'Unknown Fertilizer')
-    
-    return {'prediction': response} 
+    # response = fertilizer_map.get(int(prediction[0]), 'Unknown Fertilizer')
+    print(prediction)
+    return {'prediction': prediction} 
 
 
 if __name__ == '__main__': 
