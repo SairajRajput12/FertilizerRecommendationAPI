@@ -4,6 +4,7 @@ import pickle
 import uvicorn
 import pandas as pd
 from fastapi.middleware.cors import CORSMiddleware
+import joblib
 
 
 class FertilizerInfo(BaseModel): 
@@ -30,8 +31,7 @@ app.add_middleware(
 )
 
 # Load the trained model
-pickle_in = open("fertilizer_prediction_model.pkl", "rb") 
-classifier = pickle.load(pickle_in) 
+loaded_model = joblib.load('fertilizer_prediction_model.pkl')
 
 @app.get('/')
 def basic_function():
