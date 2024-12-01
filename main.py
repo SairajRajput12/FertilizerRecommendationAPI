@@ -30,7 +30,7 @@ app.add_middleware(
 )
 
 # Load the trained model
-pickle_in = open("fertilizer_prediction_model.pkl", "rb") 
+pickle_in = open("rf_pipeline_reduced.pkl", "rb") 
 classifier = pickle.load(pickle_in) 
 
 @app.get('/')
@@ -76,54 +76,6 @@ def predict_fertilizer(data: FertilizerInfo):
     crop_code = crop_map.get(crop_type, -1) 
     soil_code = soil_map.get(soil_type, -1) 
 
-    cc = '' 
-    st = '' 
-    if crop_code == 0: 
-        cc = 'Barley' 
-    else if crop_code == 1: 
-        cc = 'Cotton' 
-    else if crop_code == 2: 
-        cc = 'Ground Nuts' 
-    else if crop_code == 3: 
-        cc  = 'Maize' 
-    else if crop_code == 4: 
-        cc = 'Millets'
-    else if crop_code == 5: 
-        cc = 'Oil seeds'
-    else if crop_code == 6: 
-        cc = 'Paddy' 
-    else if crop_code == 7: 
-        cc = 'Pulses' 
-    else if crop_code == 8: 
-        cc = 'Sugarcane' 
-    else if crop_code == 9: 
-        cc = 'Tobacco' 
-    else if crop_code == 10: 
-        cc = 'Wheat' 
-    else if crop_code == 11: 
-        cc = 'Wheat' 
-    else if crop_code == 12: 
-        cc = 'Cotton' 
-    else if crop_code == 13: 
-        cc = 'Ground Nuts' 
-    else if crop_code == 14: 
-        cc = 'Maize' 
-    else if crop_code == 15: 
-        cc = 'Tobacco' 
-    else: 
-        cc = 'Paddy'
-
-
-    if soil_code == 0: 
-        st = 'Loamy'
-    else if soil_code == 1:
-        st = 'Sandy'
-    else if soil_code == 2: 
-        st = 'Clayey'
-    else if soil_code == 3: 
-        st = 'Black'
-    else: 
-        st = 'Red'
 
     
 
@@ -134,23 +86,12 @@ def predict_fertilizer(data: FertilizerInfo):
         return {'error': 'Invalid Crop_Code or Soil_Code'}
 
 
-    input_data = {
-        'Soil Type': [st],
-        'Crop Type': [cc],
-        'Nitrogen': [Nirogen],
-        'Potassium': [Potassium],
-        'Phosphorous': [Phosphorous]
-    }
-
-    input_df = pd.DataFrame(input_data)
-
-
     # Perform the prediction
-    prediction = model.predict(input_df)
+    prediction = model.predict([[soil_code,soil_code,Nitrogen,Potassium,Phosphorous]])
 
     
     # Extracting the first element from the prediction array
-    # prediction_code = int(prediction[0])
+    prediction_code = int(prediction[0])
     
     # Get the fertilizer name from the prediction
     response = fertilizer_map.get(prediction, 'Unknown Fertilizer')
