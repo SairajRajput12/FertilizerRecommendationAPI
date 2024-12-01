@@ -30,7 +30,7 @@ app.add_middleware(
 )
 
 # Load the trained model
-pickle_in = open("improved.pkl", "rb") 
+pickle_in = open("improved_1.pkl", "rb") 
 classifier = pickle.load(pickle_in) 
 
 def recommendation(Nitrogen,Potassium,Phosphorous,Soil_Num,Crop_Num):
