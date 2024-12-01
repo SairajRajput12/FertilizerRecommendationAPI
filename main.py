@@ -57,15 +57,15 @@ def predict_fertilizer(data: FertilizerInfo):
     Crop_Code = data['Crop_Code'] 
     
     # Mapping dictionaries
-    soil_map={
-        'loamy':0,
-        'sandy':1,
-        'clayey':2,
-        'black':3,
-        'red':4
+    soil_dict={
+        'Loamy':0,
+        'Sandy':1,
+        'Clayey':2,
+        'Black':3,
+        'Red':4
     }
     
-    crop_map={
+    crop_dict={
         'sugarcane':0,
         'cotton':1,
         'millets':2,
@@ -76,19 +76,26 @@ def predict_fertilizer(data: FertilizerInfo):
         'barley':7,
         'oil seeds':8,
         'ground Nuts':9,
-        'maize':10   
+        'maize':10, 
+        'pomegranate':11, 
+        'orange':12, 
+        'rice':13, 
+        'watermelon':14, 
+        'kidneybeans':15, 
+        'coffee':16
     }
+
 
     
     soil_type = Soil_Code.lower()
     crop_type = Crop_Code.lower()
     
-    fertilizer_map = {
-        0: "10-10-10", 1: "10-26-26", 2: "14-14-14", 3: "14-35-14", 
-        4: "15-15-15", 5: "17-17-17", 6: "20-20", 7: "28-28", 8: "DAP", 
-        9: "Potassium chloride", 10: "Potassium sulfate", 11: "Superphosphate", 
-        12: "TSP", 13: "Urea"
-    }
+    # fertilizer_map = {
+    #     0: "10-10-10", 1: "10-26-26", 2: "14-14-14", 3: "14-35-14", 
+    #     4: "15-15-15", 5: "17-17-17", 6: "20-20", 7: "28-28", 8: "DAP", 
+    #     9: "Potassium chloride", 10: "Potassium sulfate", 11: "Superphosphate", 
+    #     12: "TSP", 13: "Urea"
+    # }
 
     
     
@@ -107,7 +114,7 @@ def predict_fertilizer(data: FertilizerInfo):
     
     
     if crop_code == -1 or soil_code == -1:
-        crop_code = 10
+        return {'error': 'Invalid Crop_Code or Soil_Code'}
 
 
     # Perform the prediction
