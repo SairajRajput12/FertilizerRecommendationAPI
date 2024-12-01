@@ -89,11 +89,17 @@ def predict_fertilizer(data: FertilizerInfo):
         9: "Potassium chloride", 10: "Potassium sulfate", 11: "Superphosphate", 
         12: "TSP", 13: "Urea"
     }
+
+    
     
     # Convert the string inputs to integer codes
     crop_code = crop_map.get(crop_type, -1) 
+    
+    
     soil_code = soil_map.get(soil_type, -1) 
 
+    
+    
 
     
 
@@ -101,7 +107,7 @@ def predict_fertilizer(data: FertilizerInfo):
     
     
     if crop_code == -1 or soil_code == -1:
-        return {'error': 'Invalid Crop_Code or Soil_Code'}
+        crop_code = 10
 
 
     # Perform the prediction
