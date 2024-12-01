@@ -1,33 +1,31 @@
-from fastapi import FastAPI 
-from pydantic import BaseModel 
+from fastapi import FastAPI
+from pydantic import BaseModel
 import pickle
 import uvicorn
 import pandas as pd
 from fastapi.middleware.cors import CORSMiddleware
 import joblib
 
+class FertilizerInfo(BaseModel):
+    Temperature: int
+    Humidity: int
+    Moisture: int
+    Nitrogen: int
+    Potassium: int
+    Phosphorous: int
+    Soil_Code: str
+    Crop_Code: str
 
-class FertilizerInfo(BaseModel): 
-    Temperature: int 
-    Humidity: int 
-    Moisture: int 
-    Nitrogen: int 
-    Potassium: int 
-    Phosphorous: int 
-    Soil_Code: str 
-    Crop_Code: str 
+app = FastAPI()
 
-
-app = FastAPI() 
-
-origins = {"*"} 
+origins = {"*"}
 
 app.add_middleware(
-    CORSMiddleware, 
-    allow_origins=origins, 
-    allow_credentials=True, 
-    allow_methods=["*"], 
-    allow_headers=["*"], 
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Load the trained model
@@ -35,98 +33,98 @@ loaded_model = joblib.load('fertilizer_prediction_model.pkl')
 
 @app.get('/')
 def basic_function():
-    return {'message': 'Welcome to the Fertilizer Prediction API'} 
+    return {'message': 'Welcome to the Fertilizer Prediction API'}
 
-@app.post('/post') 
-def predict_fertilizer(data: FertilizerInfo): 
-    data = data.dict() 
-    Temperature = data['Temperature'] 
-    Humidity = data['Humidity'] 
-    Moisture = data['Moisture'] 
-    Nitrogen = data['Nitrogen'] 
-    Potassium = data['Potassium'] 
-    Phosphorous = data['Phosphorous'] 
-    Soil_Code = data['Soil_Code'] 
-    Crop_Code = data['Crop_Code'] 
-    
-    # Mapping dictionaries
+@app.post('/predict')
+def predict_fertilizer(data: FertilizerInfo):
+    # Convert the incoming data to dictionary
+    data = data.dict()
+    Temperature = data['Temperature']
+    Humidity = data['Humidity']
+    Moisture = data['Moisture']
+    Nitrogen = data['Nitrogen']
+    Potassium = data['Potassium']
+    Phosphorous = data['Phosphorous']
+    Soil_Code = data['Soil_Code']
+    Crop_Code = data['Crop_Code']
+
+    # Mapping dictionaries for crops and soils
     crop_map = {
-        "barley": 0, "cotton": 1, "ground nuts": 2, "maize": 3, "millets": 4, 
-        "oil seeds": 5, "paddy": 6, "pulses": 7, "sugarcane": 8, "tobacco": 9, 
-        "wheat": 10, "coffee": 11, "kidneybeans": 12, "orange": 13, 
+        "barley": 0, "cotton": 1, "ground nuts": 2, "maize": 3, "millets": 4,
+        "oil seeds": 5, "paddy": 6, "pulses": 7, "sugarcane": 8, "tobacco": 9,
+        "wheat": 10, "coffee": 11, "kidneybeans": 12, "orange": 13,
         "pomegranate": 14, "rice": 15, "watermelon": 16
     }
-    
+
     soil_map = {
         "black": 0, "clayey": 1, "loamy": 2, "red": 3, "sandy": 4
     }
-    
-    soil_type = Soil_Code.lower()
-    crop_type = Crop_Code.lower()
-    
+
     fertilizer_map = {
-        0: "10-10-10", 1: "10-26-26", 2: "14-14-14", 3: "14-35-14", 
-        4: "15-15-15", 5: "17-17-17", 6: "20-20", 7: "28-28", 8: "DAP", 
-        9: "Potassium chloride", 10: "Potassium sulfate", 11: "Superphosphate", 
+        0: "10-10-10", 1: "10-26-26", 2: "14-14-14", 3: "14-35-14",
+        4: "15-15-15", 5: "17-17-17", 6: "20-20", 7: "28-28", 8: "DAP",
+        9: "Potassium chloride", 10: "Potassium sulfate", 11: "Superphosphate",
         12: "TSP", 13: "Urea"
     }
-    
+
     # Convert the string inputs to integer codes
-    crop_code = crop_map.get(crop_type, -1) 
-    soil_code = soil_map.get(soil_type, -1) 
+    crop_code = crop_map.get(Crop_Code.lower(), -1)
+    soil_code = soil_map.get(Soil_Code.lower(), -1)
 
-    cc = '' 
-    st = '' 
-    if crop_code == 0: 
-        cc = 'Barley' 
-    elif crop_code == 1: 
-        cc = 'Cotton' 
-    elif crop_code == 2: 
-        cc = 'Ground Nuts' 
-    elif crop_code == 3: 
-        cc = 'Maize' 
-    elif crop_code == 4: 
-        cc = 'Millets'
-    elif crop_code == 5: 
-        cc = 'Oil seeds'
-    elif crop_code == 6: 
-        cc = 'Paddy' 
-    elif crop_code == 7: 
-        cc = 'Pulses' 
-    elif crop_code == 8: 
-        cc = 'Sugarcane' 
-    elif crop_code == 9: 
-        cc = 'Tobacco' 
-    elif crop_code == 10: 
-        cc = 'Wheat' 
-    elif crop_code == 11: 
-        cc = 'Wheat' 
-    elif crop_code == 12: 
-        cc = 'Cotton' 
-    elif crop_code == 13: 
-        cc = 'Ground Nuts' 
-    elif crop_code == 14: 
-        cc = 'Maize' 
-    elif crop_code == 15: 
-        cc = 'Tobacco' 
-    else: 
-        cc = 'Paddy'
-
-
-    if soil_code == 0: 
-        st = 'Loamy'
-    elif soil_code == 1:
-        st = 'Sandy'
-    elif soil_code == 2: 
-        st = 'Clayey'
-    elif soil_code == 3: 
-        st = 'Black'
-    else: 
-        st = 'Red'
-
+    # Error handling for invalid crop or soil code
     if crop_code == -1 or soil_code == -1:
         return {'error': 'Invalid Crop_Code or Soil_Code'}
 
+    # Map the crop code and soil code to string names using if-elif
+    cc = ''
+    if crop_code == 0:
+        cc = 'Barley'
+    elif crop_code == 1:
+        cc = 'Cotton'
+    elif crop_code == 2:
+        cc = 'Ground Nuts'
+    elif crop_code == 3:
+        cc = 'Maize'
+    elif crop_code == 4:
+        cc = 'Millets'
+    elif crop_code == 5:
+        cc = 'Oil seeds'
+    elif crop_code == 6:
+        cc = 'Paddy'
+    elif crop_code == 7:
+        cc = 'Pulses'
+    elif crop_code == 8:
+        cc = 'Sugarcane'
+    elif crop_code == 9:
+        cc = 'Tobacco'
+    elif crop_code == 10:
+        cc = 'Wheat'
+    elif crop_code == 11:
+        cc = 'Coffee'
+    elif crop_code == 12:
+        cc = 'Kidneybeans'
+    elif crop_code == 13:
+        cc = 'Orange'
+    elif crop_code == 14:
+        cc = 'Pomegranate'
+    elif crop_code == 15:
+        cc = 'Rice'
+    elif crop_code == 16:
+        cc = 'Watermelon'
+
+    st = ''
+    if soil_code == 0:
+        st = 'Black'
+    elif soil_code == 1:
+        st = 'Clayey'
+    elif soil_code == 2:
+        st = 'Loamy'
+    elif soil_code == 3:
+        st = 'Red'
+    elif soil_code == 4:
+        st = 'Sandy'
+
+    # Prepare the input data for prediction
     input_data = {
         'Soil Type': [st],
         'Crop Type': [cc],
@@ -139,14 +137,12 @@ def predict_fertilizer(data: FertilizerInfo):
 
     # Perform the prediction
     prediction = loaded_model.predict(input_df)
-
-    # Get the fertilizer name from the prediction
-    # response = fertilizer_map.get(int(prediction[0]), 'Unknown Fertilizer')
     print(prediction)
-    return {'prediction': prediction} 
+    # Return the predicted fertilizer
+    # predicted_fertilizer = fertilizer_map.get(int(prediction[0]), 'Unknown Fertilizer')
+    return {'predicted_fertilizer': prediction}
 
-
-if __name__ == '__main__': 
+if __name__ == '__main__':
     uvicorn.run(app, host='127.0.0.1', port=8000)
 
 
