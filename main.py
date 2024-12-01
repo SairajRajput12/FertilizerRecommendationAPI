@@ -57,7 +57,7 @@ def predict_fertilizer(data: FertilizerInfo):
     Crop_Code = data['Crop_Code'] 
     
     # Mapping dictionaries
-    soil_dict={
+    soil_map={
         'Loamy':0,
         'Sandy':1,
         'Clayey':2,
@@ -65,7 +65,7 @@ def predict_fertilizer(data: FertilizerInfo):
         'Red':4
     }
     
-    crop_dict={
+    crop_map={
         'sugarcane':0,
         'cotton':1,
         'millets':2,
@@ -101,17 +101,7 @@ def predict_fertilizer(data: FertilizerInfo):
     
     # Convert the string inputs to integer codes
     crop_code = crop_map.get(crop_type, -1) 
-    
-    
     soil_code = soil_map.get(soil_type, -1) 
-
-    
-    
-
-    
-
-    
-    
     
     if crop_code == -1 or soil_code == -1:
         return {'error': 'Invalid Crop_Code or Soil_Code'}
