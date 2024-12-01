@@ -30,8 +30,15 @@ app.add_middleware(
 )
 
 # Load the trained model
-pickle_in = open("rf_pipeline_reduced.pkl", "rb") 
+pickle_in = open("improved.pkl", "rb") 
 classifier = pickle.load(pickle_in) 
+
+def recommendation(Nitrogen,Potassium,Phosphorous,Soil_Num,Crop_Num):
+    features = np.array([[Nitrogen,Potassium,Phosphorous,Soil_Num,Crop_Num]])
+    prediction = classifier.predict(features).reshape(1,-1)
+    
+    return prediction[0] 
+
 
 @app.get('/')
 def basic_function():
@@ -87,16 +94,16 @@ def predict_fertilizer(data: FertilizerInfo):
 
 
     # Perform the prediction
-    prediction = model.predict([[soil_code,soil_code,Nitrogen,Potassium,Phosphorous]])
+    prediction = classifier.predict([[Nitrogen,Potassium,Phosphorous,soil_code,crop_code]])
 
     
     # Extracting the first element from the prediction array
-    prediction_code = int(prediction[0])
+    # prediction_code = int(prediction[0])
     
     # Get the fertilizer name from the prediction
-    response = fertilizer_map.get(prediction, 'Unknown Fertilizer')
+    # response = fertilizer_map.get(prediction, 'Unknown Fertilizer')
     
-    return {'prediction': response} 
+    return {'prediction': prediction[0]} 
 
 
 if __name__ == '__main__': 
