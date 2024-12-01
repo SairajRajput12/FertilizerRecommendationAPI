@@ -57,17 +57,28 @@ def predict_fertilizer(data: FertilizerInfo):
     Crop_Code = data['Crop_Code'] 
     
     # Mapping dictionaries
-    crop_map = {
-        "barley": 0, "cotton": 1, "ground nuts": 2, "maize": 3, "millets": 4, 
-        "oil seeds": 5, "paddy": 6, "pulses": 7, "sugarcane": 8, "tobacco": 9, 
-        "wheat": 10, "coffee": 11, "kidneybeans": 12, "orange": 13, 
-        "pomegranate": 14, "rice": 15, "watermelon": 16
+    soil_map={
+        'loamy':1,
+        'sandy':2,
+        'clayey':3,
+        'black':4,
+        'red':5
     }
     
-    
-    soil_map = {
-        "black": 0, "clayey": 1, "Loamy": 2, "red": 3, "sandy": 4
+    crop_map={
+        'sugarcane':1,
+        'cotton':2,
+        'millets':3,
+        'paddy':4,
+        'pulses':5,
+        'wheat':6,
+        'tobacco':7,
+        'barley':8,
+        'oil seeds':9,
+        'ground Nuts':10,
+        'maize':11   
     }
+
     
     soil_type = Soil_Code.lower()
     crop_type = Crop_Code.lower()
