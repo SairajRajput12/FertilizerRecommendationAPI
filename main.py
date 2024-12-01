@@ -106,7 +106,7 @@ def predict_fertilizer(data: FertilizerInfo):
 
     # Perform the prediction
     prediction = classifier.predict([[Nitrogen,Potassium,Phosphorous,soil_code,crop_code]])
-
+    print(prediction)
     
     # Extracting the first element from the prediction array
     # prediction_code = int(prediction[0])
