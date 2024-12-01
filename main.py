@@ -134,7 +134,7 @@ def predict_fertilizer(data: FertilizerInfo):
     }
 
     input_df = pd.DataFrame(input_data)
-
+    print(input_df)
     # Perform the prediction
     prediction = loaded_model.predict(input_df)
     print(prediction)
