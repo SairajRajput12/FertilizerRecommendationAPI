@@ -55,14 +55,14 @@ def predict_fertilizer(data: FertilizerInfo):
     Phosphorous = data['Phosphorous'] 
     Soil_Code = data['Soil_Code'] 
     Crop_Code = data['Crop_Code'] 
-    
+    print('data recieved !')
     # Mapping dictionaries
     soil_map={
-        'Loamy':0,
-        'Sandy':1,
-        'Clayey':2,
-        'Black':3,
-        'Red':4
+        'loamy':0,
+        'sandy':1,
+        'clayey':2,
+        'black':3,
+        'red':4
     }
     
     crop_map={
@@ -108,6 +108,7 @@ def predict_fertilizer(data: FertilizerInfo):
 
 
     # Perform the prediction
+    print('prediction')
     prediction = classifier.predict([[Nitrogen,Potassium,Phosphorous,soil_code,crop_code]])
     print(prediction)
     
