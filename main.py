@@ -58,25 +58,25 @@ def predict_fertilizer(data: FertilizerInfo):
     
     # Mapping dictionaries
     soil_map={
-        'loamy':1,
-        'sandy':2,
-        'clayey':3,
-        'black':4,
-        'red':5
+        'loamy':0,
+        'sandy':1,
+        'clayey':2,
+        'black':3,
+        'red':4
     }
     
     crop_map={
-        'sugarcane':1,
-        'cotton':2,
-        'millets':3,
-        'paddy':4,
-        'pulses':5,
-        'wheat':6,
-        'tobacco':7,
-        'barley':8,
-        'oil seeds':9,
-        'ground Nuts':10,
-        'maize':11   
+        'sugarcane':0,
+        'cotton':1,
+        'millets':2,
+        'paddy':3,
+        'pulses':4,
+        'wheat':5,
+        'tobacco':6,
+        'barley':7,
+        'oil seeds':8,
+        'ground Nuts':9,
+        'maize':10   
     }
 
     
